@@ -1,4 +1,4 @@
-package br.tec.dimensa.contactmanager.contactmanager;
+package br.tec.dimensa.contactmanager;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
