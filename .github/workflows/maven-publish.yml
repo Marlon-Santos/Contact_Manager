@@ -1,11 +1,14 @@
-# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
-
 name: CI/CD Flow
 
 on:
+  push:
+    branches: [DEV, QA, PPRD, PRD]
   pull_request:
-    branches: [DEV, QA, PPRD, PRD ]
+    branches: [DEV, QA, PPRD, PRD]
+
+env:
+  HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+  APP_NAME: ${{ secrets.APP_NAME }}
 
 jobs:
   build:
@@ -22,9 +25,46 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
+        server-id: github
+        settings-path: ${{ github.workspace }}
 
     - name: Build with Maven
       run: mvn clean install
       
+    - name: Cache jar file for next job
+      uses: actions/cache@v3
+      with:
+        path: target/contactmanager-0.0.1-SNAPSHOT.jar
+        key: contactmanager-jar-${{ github.sha }}
+      
+  deploy:
+    needs: [build]
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get cache jar file
+        uses: actions/cache@v3
+        with:
+          path: target/contactmanager-0.0.1-SNAPSHOT.jar
+          key: contactmanager-jar-${{ github.sha }}
+          restore-keys: |
+            contactmanager-jar
+            
+      - name: Docker build
+        run: docker build --pull --no-cache --tag app .
+
+      - name: Login to DockerHub Registry
+        run: docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
+
+      - name: Publish
+        run: |
+          heroku container:push web -a $APP_NAME
+          heroku container:release web -a $APP_NAME
