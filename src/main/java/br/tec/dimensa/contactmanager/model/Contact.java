@@ -1,31 +1,39 @@
 package br.tec.dimensa.contactmanager.model;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.text.WordUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
+@NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(of = {"id"})
 public class Contact {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String email;
     private String phoneNumber;
     private String birthDate;
-
-    public Contact() {
-    }
+    private LocalDateTime lastModified = LocalDateTime.now();
 
     public Contact(String name, String email, String phoneNumber, String birthDate) {
         this.name = Objects.nonNull(name) ? WordUtils.capitalize(name) : null;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
+        lastModified = LocalDateTime.now();
 
         validate();
 
@@ -62,56 +70,4 @@ public class Contact {
 
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(String birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Contact)) return false;
-        Contact contact = (Contact) o;
-        return id.equals(contact.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

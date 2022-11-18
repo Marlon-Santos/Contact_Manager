@@ -1,10 +1,16 @@
 package br.tec.dimensa.contactmanager.api.dto.input;
 
 import br.tec.dimensa.contactmanager.model.Contact;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+@NoArgsConstructor
+@Getter
+@EqualsAndHashCode(of = {"name", "email", "phoneNumber"})
 public class ContactInput {
     @NotBlank
     private String name;
@@ -19,35 +25,4 @@ public class ContactInput {
         return new Contact(name, email, phoneNumber, birthDate);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(String birthDate) {
-        this.birthDate = birthDate;
-    }
 }
