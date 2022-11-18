@@ -92,9 +92,13 @@ public class ContactService implements ContactServiceContract {
     public Contact updateContactById(Long id, ContactInput contactInput) {
         try {
             Contact contact = contactInput.toContact();
-            if (isContactRepeat(contact.getName())) throw new RuntimeException("contact already exists");
-
             Contact currentContact = findContactById(id);
+
+            if (!contact.getName().equals(currentContact.getName()) && isContactRepeat(contact.getName())) {
+                throw new RuntimeException("contact already exists");
+
+            }
+
             BeanUtils.copyProperties(contact, currentContact, "id");
 
             return contactRepository.save(currentContact);

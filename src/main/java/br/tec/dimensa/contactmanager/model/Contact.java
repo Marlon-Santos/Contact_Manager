@@ -36,17 +36,29 @@ public class Contact {
         if (Objects.isNull(email)) throw new RuntimeException("email cannot be null");
         if (Objects.isNull(phoneNumber)) throw new RuntimeException("phoneNumber cannot be null");
 
-        if (name.isBlank() || name.trim().length() < 3 || !name.matches("/[a-zA-Z\\u00C0-\\u00FF ]+/i"))
+        if (name.isBlank() || name.trim().length() < 3) {
             throw new RuntimeException("name must contain least 3 letters");
 
-        if (email.isBlank() || email.trim().length() < 3 || !email.matches("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$"))
-            throw new RuntimeException("email needs to be valid");
+        }
 
-        if (phoneNumber.isBlank() || !phoneNumber.matches("[0-9]*"))
+        //Regex validates if a string is in an email format
+        if (email.isBlank() || email.trim().length() < 3 ||
+                !email.matches("([a-zA-Z0-9]+(?:[._+-][a-zA-Z0-9]+)*)@([a-zA-Z0-9]+(?:[.-][a-zA-Z0-9]+)*[.][a-zA-Z]{2,})")) {
+            throw new RuntimeException("email needs to be valid xxxx@xxxxx.xxx");
+
+        }
+
+        //Regex validates if it contains only numbers
+        if (phoneNumber.isBlank() || !phoneNumber.matches("[0-9]*")) {
             throw new RuntimeException("phoneNumber needs to be valid");
 
-        if (!birthDate.isBlank() || !birthDate.matches("\\d{2}/\\d{2}/\\d{4}"))
-            throw new RuntimeException("birthDate needs to be valid");
+        }
+
+        //Regex validates if the string is in dd/mm/yyyy format
+        if (Objects.nonNull(birthDate) && !birthDate.isBlank() && !birthDate.matches("\\d{2}/\\d{2}/\\d{4}")) {
+            throw new RuntimeException("birthDate needs to be valid dd/mm/yyyy");
+
+        }
 
     }
 
