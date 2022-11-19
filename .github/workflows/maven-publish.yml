@@ -4,7 +4,7 @@ on:
   push:
     branches: [DEV, QA, PPRD, PRD]
   pull_request:
-    branches: [DEV, QA, PPRD, PRD]
+    branches: [DEV]
 
 env:
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
